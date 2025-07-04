@@ -1,0 +1,10 @@
+{
+  "static": {
+    "folder": "static",
+    "audio_subfolder": "audio",
+    "url_path": ""
+  },
+  "api": {
+    "base_path": "/api"
+  }
+}

@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  chifron-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chifron-api-dev
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - FLASK_APP=app.py
+      - PYTHONUNBUFFERED=1
+      - CONFIG_PATH=/app/configs/config.json
+    volumes:
+      - .:/app
+      - ./static/audio:/app/static/audio
+      - ./configs:/app/configs:ro
+    ports:
+      - "5001:5000"
+    command: flask run --host=0.0.0.0 --port=5000 --reload
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

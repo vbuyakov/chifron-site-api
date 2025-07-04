@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+  chifron-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: chifron-api-prod
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=0
+      - TZ=${TIMEZONE:-UTC}
+      - CONFIG_PATH=/app/configs/config.json
+    volumes:
+      - .:/app
+      - ./static/audio:/app/static/audio:rw
+      - ./configs:/app/configs:ro
+    working_dir: /app
+    ports:
+      - "${CHIFRON_API_PORT:-5001}:5000"
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  app-network:
+    driver: bridge
